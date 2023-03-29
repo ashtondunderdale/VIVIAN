@@ -22,6 +22,7 @@ engine.setProperty('voice', engine.getProperty('voices')[0].id) # sets engine vo
 
 def speak(text):
     """Configures text-to-speech engine with speech properties"""
+
     engine.say(text)
     engine.runAndWait() # synchronous speech blocking
 
@@ -32,6 +33,7 @@ if __name__ == "__main__":
 
 def listenForCommand():
     """Listens for voice commands using the mic and speech_recognition library"""
+
     listener = sr.Recognizer()
     print("\nAwaiting command input\n"), speak("Awaiting command input")
     with sr.Microphone() as source:
@@ -43,8 +45,8 @@ def listenForCommand():
         command = listener.recognize_google(inputSpeech, language="en_gb")
         print(f"The input speech was: {command}")
         
-        if "vivian" in command.lower():
-            command = command.lower().replace("vivian", "").strip() # remove keyword from command 
+        if any(keyword in command.lower() for keyword in ["vivian", "vivien"]):
+            command = command.lower().replace("vivian", "").replace("vivien", "").strip() # remove keyword from command 
             return command
         else:
             speak("I'm sorry, I didn't hear the keyword, Vivian")
@@ -60,30 +62,42 @@ while True:
     command = listenForCommand()
     if command:
 
-        # greetings command
+        # greetings command 1.0
         if any(phrase in command.lower() for phrase in ["hello", "hi", "hey"]):
-            speak("Hello there! Ashton")
+            speak("Hello there, Ashton")
 
-        # goodbye command
+        # exit command 1.0
         elif any(phrase in command.lower() for phrase in ["goodbye", "shut down", "terminate", "stop"]):
             speak("Shutting Down")
             exit()
             
-        # name command
+        # name command 1.0
         elif any(phrase in command.lower() for phrase in ["what is your name", "who are you", "what are you called", "what are you"]):
             speak("My name is Vivian, I am an AI assisstant program")
 
-        # VIVIAN meaning command
-        elif any(phrase in command.lower() for phrase in ["what does vivian mean", "what does vivian stand for"]):
-            speak("My name, Vivian, stands for, Virtually Interactive Voice Intelligent Artificial Network")
-
-        # purpose command
+        # purpose command 1.0
         elif any(phrase in command.lower() for phrase in [ "what are you for", "what is your purpose", "why were you created"]):
-            speak("I was created as an AI model for assissting you in any way I can")    
+            speak("I was created as an AI model for assissting you in any way I can")   
 
-        # functions command
-        elif any(phrase in command.lower() for phrase in ["What do you do", "what can you do", ""]):
-            speak("I was created as an AI model for assissting you in any way I can")  
+        # VIVIAN meaning command 1.0
+        elif any(phrase in command.lower() for phrase in ["what does vivian mean", "what does vivian stand for"]):
+            speak("My name, Vivian, stands for, Virtually Interactive Voice Intelligent Artificial Network")     
+
+        # say command 
+        elif command.split()[0] == "say": 
+            textToSpeak = ' '.join(command.split()[1:])
+            speak(f"{textToSpeak}")
+        
+        # calculate command
+        elif command.startswith("calculate "): 
+            expression = command.split("calculate ")[1]
+            expression = expression.replace("asterisk", "*").replace("x", "*") # allows the computer to perform multiplication
+            try:
+                result = eval(expression)
+                speak(f"The result of {expression} is {result}")
+            except:
+                speak("Sorry, I could not evaluate that expression.")
+
 
     # unrecognized command
     else:
