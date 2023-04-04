@@ -10,6 +10,8 @@
 import pyttsx3
 import speech_recognition as sr
 
+import webbrowser # search command
+
 # engine initialization
 engine = pyttsx3.init()
 
@@ -83,12 +85,12 @@ while True:
         elif any(phrase in command.lower() for phrase in ["what does vivian mean", "what does vivian stand for"]):
             speak("My name, Vivian, stands for, Virtually Interactive Voice Intelligent Artificial Network")     
 
-        # say command 
+        # say command 1.1
         elif command.split()[0] == "say": 
             textToSpeak = ' '.join(command.split()[1:])
             speak(f"{textToSpeak}")
         
-        # calculate command
+        # calculate command 1.1
         elif command.startswith("calculate "): 
             expression = command.split("calculate ")[1]
             expression = expression.replace("asterisk", "*").replace("x", "*") # allows the computer to perform multiplication
@@ -98,6 +100,18 @@ while True:
             except:
                 speak("Sorry, I could not evaluate that expression.")
 
+        # search command 1.1
+        elif command.startswith("search "):
+            searchCommand = command.split("search ")[1]
+            webbrowser.open(f"https://www.google.com/search?q={searchCommand}")
+            speak(f"Here are the search results for {searchCommand}")
+
+        # define command 1.1
+        elif command.startswith("define "): 
+            word = command.split("define ")[1]
+            url = f"https://www.dictionary.com/browse/{word}?s=t"
+            webbrowser.get().open(url)
+            speak(f"Here is the definition of {word}")
 
     # unrecognized command
     else:
